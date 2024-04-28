@@ -30,6 +30,14 @@ else
 	file1_hour=$(( $hour / 2 * 2))
 	file2_hour=$(( $file1_hour + 2))
 fi
+
+ephday=0
+if [ $hour -ge 12 ]; then
+	ephday=$((10#$julianday))
+else
+	ephday=$((10#$julianday - 1))
+fi
+
 echo $temp_name
 
 filename="./$temp_name"
@@ -44,9 +52,9 @@ parfile=../hkm_Rrs_global_proc.par
 
 att1file="/home/software/SeaDAS/ocssw/var/anc/${year}/${julianday}/PM1ATTNR.P${year}${julianday}.$(printf "%02d" $file1_hour)00.003"
 att2file="/home/software/SeaDAS/ocssw/var/anc/${year}/${julianday2}/PM1ATTNR.P${year}${julianday2}.$(printf "%02d" $file2_hour)00.003"
-eph1file="/home/software/SeaDAS/ocssw/var/anc/${year}/${julianday}/PM1EPHND.P${year}${julianday}.1200.001"
+eph1file="/home/software/SeaDAS/ocssw/var/anc/${year}/$(printf "%03d" $ephday)/PM1EPHND.P${year}$(printf "%03d" $ephday).1200.001"
 if [ ! -f $eph1file ]; then
-	eph1file="/home/software/SeaDAS/ocssw/var/anc/${year}/${julianday}/PM1EPHND.P${year}${julianday}.1200.003"
+	eph1file="/home/software/SeaDAS/ocssw/var/anc/${year}/$(printf "%03d" $ephday)/PM1EPHND.P${year}$(printf "%03d" $ephday).1200.003"
 fi
 
 #echo $att1file
@@ -72,6 +80,7 @@ modis_L1B -o $l1bfiles -q $l1bfiles_qkm -k $l1bfiles_hkm $l1afiles $geofiles
 if [ ! -e $l1bfiles ]; then
 	echo "$l1bfiles" >> ../error.log
 	echo "$filename" >> ../error_v2.log
+ 	exit
 else
 	# back upper dir
 	python ../L1B_replace_satuated_rrs2.py $l1bfiles
