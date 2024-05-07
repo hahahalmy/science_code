@@ -17,7 +17,6 @@ if [ -d "./result" ]; then
 
 # create tmp fold in ./
 temp_dir=$(mktemp -d -p .)
-# echo "Created temporary directory: $temp_dir"
 
 # mv bz2file to temp_dir to process
 mv $filename $temp_dir
@@ -92,6 +91,7 @@ l2afiles=${l1afiles%.*}".L2A_LAC_ZD_-3"
 parfile=../1km_Rrs_global_proc_nir.par
 
 ocsswhome=/home/nkd/software/SeaDAS_8.3.0/ocssw
+
 att1file="$ocsswhome/var/anc/${year}/${julianday}/PM1ATTNR.P${year}${julianday}.$(printf "%02d" $file1_hour)00.003"
 if [ ! -f $att1file ]; then
 	att1file="$ocsswhome/var/anc/${year}/${julianday}/PM1ATTNR.P${year}${julianday}.$(printf "%02d" $file1_hour)00.002"
@@ -102,6 +102,7 @@ if [ ! -f $att1file ]; then
         fi
     fi
 fi
+
 att2file="$ocsswhome/var/anc/${year2}/$(printf "%03d" $julianday2)/PM1ATTNR.P${year2}$(printf "%03d" $julianday2).$(printf "%02d" $file2_hour)00.003"
 if [ ! -f $att2file ]; then
 	att2file="$ocsswhome/var/anc/${year2}/$(printf "%03d" $julianday2)/PM1ATTNR.P${year2}$(printf "%03d" $julianday2).$(printf "%02d" $file2_hour)00.002"
@@ -112,6 +113,7 @@ if [ ! -f $att2file ]; then
         fi
     fi
 fi
+
 eph1file="$ocsswhome/var/anc/${year1}/$(printf "%03d" $ephday)/PM1EPHND.P${year1}$(printf "%03d" $ephday).1200.001"
 if [ ! -f $eph1file ]; then
 	eph1file="$ocsswhome/var/anc/${year1}/$(printf "%03d" $ephday)/PM1EPHND.P${year1}$(printf "%03d" $ephday).1200.003"
@@ -122,11 +124,9 @@ if [ ! -f $eph1file ]; then
         fi
     fi
 fi
-#echo $att1file
-#echo $att2file
-#echo $eph1file
 
-bzip2 -dk ${filename}
+
+bzip2 -d ${filename}
 if [ ! -e $l1afiles ]; then
     echo "$filename" >> ../l1acorrupted.txt
 	echo "$l1afiles" >> ../error.log
